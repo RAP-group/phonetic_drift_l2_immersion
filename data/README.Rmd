@@ -1,0 +1,20 @@
+---
+output: github_document
+---
+
+# Phonetic drift in L2 learners
+
+Last update: `r Sys.Date()`
+
+## Overview
+
+
+```{r, 'structure', results='asis', message=F, echo=F}
+fs::dir_ls(here::here(""), regexp = "md", invert = T) |>
+  tibble::as_tibble() |>
+  dplyr::mutate(
+    value = stringr::str_remove(value, here::here("")), 
+    value = glue::glue("- {value}")) |>
+  dplyr::pull()
+```
+
