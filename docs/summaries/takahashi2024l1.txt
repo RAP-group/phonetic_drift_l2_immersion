@@ -1,0 +1,44 @@
+Objective
+ Japanese perception of alveolar stops among late Japanese learners of English, perceptual abilities to those of monolingual speakers of both languages.
+
+Participants
+Group Composition: 61 L1 Japanese speakers learning L2 English, divided between residents in Japan and the US, and compared against 21 Japanese and 16 English monolinguals.
+Criteria for L2 Learners: Began learning English around age 12 and were actively using or learning English.
+
+
+
+Methodology
+
+Perception Tasks: Included AX discrimination, forced categorization, and goodness rating tasks centered on a synthesized /da–ta/ voice onset time (VOT) continuum.
+
+sensitivity to VOT differences and potential shifts in voicing category boundaries due to L2 influence.
+
+
+Stimuli: Ranged from voiced to voiceless values (-20 ms to +80 ms VOT), Japanese and English phonetic categories.
+
+
+Results
+-L2 learners exhibited sensitivity peaks along the VOT continuum that differed from those of both Japanese and English monolinguals =  L2 influence.
+
+
+- L2 learners were more accepting of stimuli with longer VOTs in L1 Japanese =? drift in L1 perceptual boundaries.
+
+
+Perception-Production Link:  no direct correlation was established between L2 English production accuracy and changes in L1 Japanese perception.
+
+
+Discussion
+ results support the  (SLM-R), suggesting that L2 learning can cause perceptual drift in L1, with perception and production co-developing without clear precedence.
+
+
+
+Problemitas?: 
+
+
+Although the study suggests a connection between L2 English production capabilities and L1 Japanese perception shifts, it does not establish a direct correlation between these aspects.
+
+
+Current use of language?
+
+Potential regional or generational differences in phonetic realization that the study does not account for.
+

@@ -1,0 +1,12 @@
+Participants: The study involved 11 experienced learners (ELs) and compared their results to 19 inexperienced learners (ILs) from a previous study. All participants were adult native speakers of American English who were enrolled in a six-week intensive Korean language program in South Korea.
+
+Methods: Participants were assessed through English production experiments conducted weekly over the first five weeks of the program. The experiments measured voice onset time (VOT) for stops and fundamental frequency (f0) onset and vowel formants (F1 and F2) for vowel production.
+
+Results:
+
+Stop Production: ELs showed less lengthening of VOT for voiceless stops compared to ILs, indicating reduced phonetic drift.
+Vowel Production: ELs did not manifest significant drift in the F1 of their English vowels, unlike ILs who showed a significant decline in F1, indicating lowering of vowel height.
+Pitch (f0) Onset: EL females exhibited a smaller increase in f0 onset following voiced and voiceless stops than IL females, suggesting less phonetic drift in pitch modulation.
+The findings support the hypothesis that the magnitude of L1 phonetic drift during L2 learning is modulated by the learner's prior experience with the L2.
+
+*  previous exposure to the L2 show reduced phonetic drift in their L1 speech production, suggesting that familiarity with the L2 reduces the impact of its novel phonetic features on the L1. This contradicts the assumption that L2 influence on L1 is weakest at early stages of L2 learning and highlights the dynamic nature of both L1 and L2 as continuously evolving systems.

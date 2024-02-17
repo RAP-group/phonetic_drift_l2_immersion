@@ -1,0 +1,12 @@
+Examine how short-term visual articulatory feedback training with non-native vowels affects the production of native and non-native vowels in monolingual French speakers. The non-native vowels studied were Danish /ɔ/ (similar to French /o/) and Russian /ɨ/ (dissimilar to any French vowels).
+
+Methodology: Monolingual French speakers underwent training to produce the Danish /ɔ/ and Russian /ɨ/ vowels. The study assessed the relationship between the production of French vowels (/o/, /ø/, /y/, /i/) and the trained non-native vowels both before and after training.
+
+Findings Before Training: The compactness of French vowels was positively related to the accuracy and compactness of non-native vowel production. Participants' ability to produce non-native vowels was correlated with the compactness of their native vowel production.
+
+Findings After Training: Participants' accuracy and stability in producing the trained non-native vowels improved significantly. Training also induced a phonetic drift in the production of native vowels towards the trained non-native vowels, for vowels similar to the trained sounds.
+
+Phonetic Drift:  **was influenced by the degree of similarity between native and non-native sounds**. Native vowels similar to the trained non-native vowels were more affected by the training.
+
+**Short-term training with non-native phonetic categories can influence the production of native phonetic categories**.  flexibility of the phonetic system in adapting to new linguistic inputs.
+
