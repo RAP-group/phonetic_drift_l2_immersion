@@ -1,0 +1,16 @@
+Participants: 36 adult native English speakers with no significant prior exposure to Korean, enrolled in a six-week intensive Korean course in South Korea.
+Methods: Two acoustic experiments conducted longitudinally to elicit production of Korean (Experiment 1K) and English (Experiment 2E) at the end of each class week.
+
+Key Findings:
+Phonetic Drift in Stop Production:
+No significant change in VOT for English voiced stops but an increase in f0 onset for female learners.
+Significant lengthening in both VOT and f0 onset for English voiceless stops, aligning with Korean phonetic norms.
+Phonetic Drift in Vowel Production:
+English vowels for female learners shifted upwards (decreased F1).
+English vowels for male learners shifted downwards and forwards in the vowel space (increased F1 and F2).
+
+
+Cross-linguistic Similarity:
+Evidence of cross-language linkages at multiple levels of phonological structure.
+L2 learning influences L1 speech production rapidly and assimilatorily, making L1 more similar to L2 phonetic properties.
+Conclusion: L2 learning initiates cross-language phonetic influence from the onset, affecting L1 in complex ways that are both general (affecting classes of sounds) and specific (targeting individual phonetic features).
