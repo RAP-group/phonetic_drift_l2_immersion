@@ -1,0 +1,169 @@
+---
+title: "Speech rate analysis"
+format: html
+---
+
+# Data prep
+
+## Load libraries and helper functions
+
+```{r}
+#| label: source-libs
+#| warning: false
+#| message: false
+source(here::here("scripts", "r", "01_helpers.R"))
+
+theme_set(
+  theme_bw(base_size = 12, base_family = "Palatino") + 
+  theme(
+    axis.title.y = element_text(size = rel(0.9), hjust = 0.95), 
+    axis.title.x = element_text(size = rel(0.9), hjust = 0.95), 
+    panel.grid.major = element_line(colour = "grey90", linewidth = 0.15), 
+    panel.grid.minor = element_line(colour = "grey90", linewidth = 0.15)
+    )
+  )
+
+
+```
+
+## Load data
+
+```{r}
+#| label: load-data
+#| warning: false
+#| message: false
+spr_en <- read_csv(here("data", "raw", "speech_rate_en.csv"))
+spr_sp <- read_csv(here("data", "raw", "speech_rate_sp.csv"))
+```
+
+## Tidy data
+
+```{r}
+#| label: tidy-data
+
+dat <- bind_rows(
+  spr_en |> 
+    clean_names() |> 
+    separate(col = soundname, into = c("id", "language"), sep = "_") |> 
+    separate(col = id, into = c("id", "year"), sep = -4) |> 
+    separate(col = id, into = c("id", "phase"), sep = "[0-9](?=p)") |> 
+    mutate(language = "English"), 
+
+  spr_sp |> 
+    clean_names() |> 
+    separate(col = soundname, into = c("id", "phase"), sep = 6) |> 
+    separate(
+      col = phase, 
+      into = c("phase", "year"), 
+      sep = "(?<=[a-zA-Z])\\s*(?=[0-9])"
+    ) |> 
+    mutate(language = "Spanish") |> 
+    select(id, phase, year, language, everything())
+) |> 
+  rename(
+    n_syllables = nsyll, 
+    n_pauses = npause, 
+    recording_duration = dur_s, 
+    phonation_time = phonationtime_s, 
+    sr = speechrate_nsyll_dur, 
+    ar = articulation_rate_nsyll_phonationtime, 
+    asd = asd_speakingtime_nsyll
+  ) |> 
+  pivot_longer(
+    cols = n_syllables:asd, 
+    names_to = "metric", 
+    values_to = "val"
+  ) |> 
+  mutate(
+    phase = fct_relevel(phase, "pre"), 
+    metric = fct_relevel(metric, 
+    "n_syllables", "n_pauses", "recording_duration", "phonation_time", 
+    "sr", "ar", "asd")
+  ) |>
+  write_csv(here("data", "tidy", "spr_tidy.csv"))
+
+glimpse(dat)
+```
+
+# Metrics
+
+- n_syllables: number of syllables
+- n_pauses: number of pauses
+- recording_duration: total time (s) of recording
+- phonation_time: speaking time (s)
+- sr: speech rate (n_syllables / recording_duration)
+- ar: articulation rate (n_syllables / phonation_time)
+- asd: average syllable duration (phonation_time / n_syllables)
+
+# Exploratory plots
+
+## Spanish
+
+```{r}
+#| label: spanish
+#| dpi: 300
+#| out-width: "100%"
+#| fig-height: 4
+
+dat |> 
+  filter(language == "Spanish") |> 
+  ggplot() + 
+  aes(x = phase, y = val) + 
+  facet_wrap(. ~ metric, scales = "free_y", ncol = 4) + 
+  geom_jitter(
+    aes(color = phase), 
+    height = 0, width = 0.2, alpha = 0.2, show.legend = F
+  ) + 
+  stat_summary(
+    aes(fill = phase), 
+    fun.data = mean_cl_boot, geom = "pointrange", pch = 21, 
+    show.legend = F
+  ) + 
+  scale_fill_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
+  scale_color_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
+  labs(x = NULL, y = NULL) 
+```
+
+## English
+
+```{r}
+#| label: english
+#| dpi: 300
+#| out-width: "100%"
+#| fig-height: 4
+
+dat |> 
+  filter(language == "English") |> 
+  ggplot() + 
+  aes(x = phase, y = val) + 
+  facet_wrap(. ~ metric, scales = "free_y", ncol = 4) + 
+  geom_jitter(
+    aes(color = phase), 
+    height = 0, width = 0.2, alpha = 0.2, show.legend = F
+  ) + 
+  stat_summary(
+    aes(fill = phase), 
+    fun.data = mean_cl_boot, geom = "pointrange", pch = 21, 
+    show.legend = F
+  ) + 
+  scale_fill_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
+  scale_color_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
+  labs(x = NULL, y = NULL) 
+```
+
+
+# Models
+
+```{r}
+#| eval: false
+
+
+mutate(
+    across(
+      .cols = nsyll:asd_speakingtime_nsyll, 
+      .fns = scale_this, 
+      .names = "{.col}_z"
+    )
+  ) |> 
+
+```

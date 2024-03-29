@@ -1,0 +1,103 @@
+---
+title: "File preparation"
+author: Joseph V. Casillas
+date: 2024-02-27
+format:
+  html:
+    embed-resources: true
+  pdf: default
+execute: 
+  warning: false
+---
+
+# Setup
+
+```{r}
+#| label: set-up
+
+source(here::here("scripts", "r", "01_helpers.R"))
+
+```
+
+
+```{r}
+#| label: get-sheet
+
+# Change to OSF component later
+# Get dribble of files
+
+dat <- dir_ls(here("data", "wavs"), regexp = ".wav") |> 
+  as_tibble() |> 
+  mutate(value = str_remove(value, here("data/wavs/"))) |>
+  separate(
+    value, 
+    into = c("year", "level", "last_name", "first_name", "phase", "format"), 
+    sep = "_|\\.", 
+    extra = "merge"
+  )
+
+```
+
+
+# Some descriptives
+
+```{r}
+#| label: n-s
+
+dat |> 
+  group_by(year) |> 
+  count()
+
+dat |> 
+  group_by(level) |> 
+  count()
+
+dat |> 
+  group_by(year, phase) |> 
+  count()
+
+dat |> 
+  group_by(format) |> 
+  count()
+
+```
+
+
+Find missing interviews
+
+```{r}
+#| label: find-missing
+
+dat |> 
+  group_by(last_name, first_name, year) |> 
+  count() |> 
+  filter(n != 2) |> 
+  arrange(year) |> 
+  as.data.frame() |>
+  print()
+
+dat |> 
+  filter(first_name == "brereton")
+
+dat |> 
+  filter(last_name == "brereton")
+
+
+dat |> 
+  group_by(year, phase) |> 
+  count() |>
+  pivot_wider(names_from = "phase", values_from = "n") |> 
+  mutate(diff = ent - ext)
+
+dat |> 
+  group_by(last_name, first_name, year, phase) |> 
+  count() |>
+  pivot_wider(names_from = "phase", values_from = "n") |> 
+  mutate(diff = ent - ext) |> 
+  filter(is.na(diff)) |> 
+  arrange(last_name) |> 
+  as.data.frame() |>
+  print()
+
+```
+
