@@ -85,19 +85,30 @@ dat <- bind_rows(
 glimpse(dat)
 ```
 
-# Metrics
+# Design
 
-- n_syllables: number of syllables
+## Variables
+
+- id: unique participant identification string
+- phase: stage of data collection (pre, post)
+- year: year of immersion program
+- language: language spoken during interview (Spanish, English)
+
+## Metrics
+
+- n_syllables: number of syllables produced
 - n_pauses: number of pauses
 - recording_duration: total time (s) of recording
-- phonation_time: speaking time (s)
+- phonation_time: total speaking time (s)
 - sr: speech rate (n_syllables / recording_duration)
 - ar: articulation rate (n_syllables / phonation_time)
 - asd: average syllable duration (phonation_time / n_syllables)
 
 # Exploratory plots
 
-## Spanish
+## Spanish interview
+
+OPI-style oral assessment in which participants are asked a range of questions. 
 
 ```{r}
 #| label: spanish
@@ -121,10 +132,16 @@ dat |>
   ) + 
   scale_fill_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
   scale_color_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
-  labs(x = NULL, y = NULL) 
+  labs(
+    title = "Speech fluency metrics", 
+    subtitle = "Spanish production as a function of phase in immersion program", 
+    x = NULL, y = NULL
+  ) 
 ```
 
 ## English
+
+Participants respond to question "what does learning another language mean to you?"
 
 ```{r}
 #| label: english
@@ -148,7 +165,12 @@ dat |>
   ) + 
   scale_fill_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
   scale_color_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
-  labs(x = NULL, y = NULL) 
+  labs(x = NULL, y = NULL) + 
+  labs(
+    title = "Speech fluency metrics", 
+    subtitle = "English production as a function of phase in immersion program", 
+    x = NULL, y = NULL
+  ) 
 ```
 
 
