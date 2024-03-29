@@ -1,7 +1,22 @@
 ---
-title: "Speech rate analysis"
-format: html
+title: "L1 phonetic drift during adult L2 acquisition"
+subtitle: "Speech rate analysis"
+author: "Joseph V. Casillas"
+date: today
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
+
+# Overview
+
+A common finding in the second language (L2) speech literature is that adults who learn another language typically retain a non-native accent in the target language (TL). 
+L1 to L2 cross-linguistic influence is attested to some degree in learners of all languages at all proficiency levels, showing that learners tend to produce L2 sounds through the filter of their L1. With time and effort, L2 learners develop TL-specific phonetic categories. 
+Recent research suggests that the cross-linguistic influence that occurs in bilingual speech may be bidirectional, that is to say, L2 phonetic category formation may have behavioral consequences for L1 categories. 
+This project explores the production of native English speaking adult L2 learners of Spanish. 
+Specifically, it tracks the phonological acquisition of stop contrasts over the course of a domestic immersion program in order to shed light on how L2 phonological acquisition affects L1 phonology. 
+
 
 # Data prep
 
