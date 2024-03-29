@@ -1,7 +1,22 @@
 ---
-title: "Speech rate analysis"
-format: html
+title: "L1 phonetic drift during adult L2 acquisition"
+subtitle: "Speech rate analysis"
+author: "Joseph V. Casillas"
+date: today
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
+
+# Overview
+
+A common finding in the second language (L2) speech literature is that adults who learn another language typically retain a non-native accent in the target language (TL). 
+L1 to L2 cross-linguistic influence is attested to some degree in learners of all languages at all proficiency levels, showing that learners tend to produce L2 sounds through the filter of their L1. With time and effort, L2 learners develop TL-specific phonetic categories. 
+Recent research suggests that the cross-linguistic influence that occurs in bilingual speech may be bidirectional, that is to say, L2 phonetic category formation may have behavioral consequences for L1 categories. 
+This project explores the production of native English speaking adult L2 learners of Spanish. 
+Specifically, it tracks the phonological acquisition of stop contrasts over the course of a domestic immersion program in order to shed light on how L2 phonological acquisition affects L1 phonology. 
+
 
 # Data prep
 
@@ -85,19 +100,30 @@ dat <- bind_rows(
 glimpse(dat)
 ```
 
-# Metrics
+# Design
 
-- n_syllables: number of syllables
+## Variables
+
+- id: unique participant identification string
+- phase: stage of data collection (pre, post)
+- year: year of immersion program
+- language: language spoken during interview (Spanish, English)
+
+## Metrics
+
+- n_syllables: number of syllables produced
 - n_pauses: number of pauses
 - recording_duration: total time (s) of recording
-- phonation_time: speaking time (s)
+- phonation_time: total speaking time (s)
 - sr: speech rate (n_syllables / recording_duration)
 - ar: articulation rate (n_syllables / phonation_time)
 - asd: average syllable duration (phonation_time / n_syllables)
 
 # Exploratory plots
 
-## Spanish
+## Spanish interview
+
+OPI-style oral assessment in which participants are asked a range of questions. 
 
 ```{r}
 #| label: spanish
@@ -121,10 +147,16 @@ dat |>
   ) + 
   scale_fill_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
   scale_color_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
-  labs(x = NULL, y = NULL) 
+  labs(
+    title = "Speech fluency metrics", 
+    subtitle = "Spanish production as a function of phase in immersion program", 
+    x = NULL, y = NULL
+  ) 
 ```
 
 ## English
+
+Participants respond to question "what does learning another language mean to you?"
 
 ```{r}
 #| label: english
@@ -148,7 +180,12 @@ dat |>
   ) + 
   scale_fill_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
   scale_color_viridis_d(option = "D", begin = 0.3, end = 0.8) + 
-  labs(x = NULL, y = NULL) 
+  labs(x = NULL, y = NULL) + 
+  labs(
+    title = "Speech fluency metrics", 
+    subtitle = "English production as a function of phase in immersion program", 
+    x = NULL, y = NULL
+  ) 
 ```
 
 
