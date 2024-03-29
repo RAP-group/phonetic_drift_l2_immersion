@@ -89,5 +89,15 @@ dat |>
   pivot_wider(names_from = "phase", values_from = "n") |> 
   mutate(diff = ent - ext)
 
+dat |> 
+  group_by(last_name, first_name, year, phase) |> 
+  count() |>
+  pivot_wider(names_from = "phase", values_from = "n") |> 
+  mutate(diff = ent - ext) |> 
+  filter(is.na(diff)) |> 
+  arrange(last_name) |> 
+  as.data.frame() |>
+  print()
+
 ```
 
