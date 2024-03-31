@@ -4,7 +4,12 @@ subtitle: "Speech rate analysis"
 author: "Joseph V. Casillas"
 date: today
 format:
-  html:
+  html: 
+    grid:
+      sidebar-width: 200px
+      body-width: 1000px
+      margin-width: 200px
+      gutter-width: 1.5rem
     code-fold: true
     code-summary: "Show the code"
 ---
@@ -34,7 +39,8 @@ theme_set(
     axis.title.y = element_text(size = rel(0.9), hjust = 0.95), 
     axis.title.x = element_text(size = rel(0.9), hjust = 0.95), 
     panel.grid.major = element_line(colour = "grey90", linewidth = 0.15), 
-    panel.grid.minor = element_line(colour = "grey90", linewidth = 0.15)
+    panel.grid.minor = element_line(colour = "grey90", linewidth = 0.15), 
+    strip.background = element_blank()
     )
   )
 
@@ -151,7 +157,7 @@ dat |>
     title = "Speech fluency metrics", 
     subtitle = "Spanish production as a function of phase in immersion program", 
     x = NULL, y = NULL
-  ) 
+  )
 ```
 
 ## English
@@ -192,15 +198,328 @@ dat |>
 # Models
 
 ```{r}
-#| eval: false
+#| label: model-prep
+
+# Scale continuous variables
+dat_z <- dat |> 
+  group_by(language, metric) |> 
+  mutate(val_z = scale_this(val))
+
+bf_raw <- bf(
+  val ~ 0 + phase:language + 
+    (1 + phase:language | id)
+)
+
+bf_z <- bf(
+  val_z ~ phase * language + 
+    (1 + phase * language | id)
+)
+
+```
 
 
-mutate(
-    across(
-      .cols = nsyll:asd_speakingtime_nsyll, 
-      .fns = scale_this, 
-      .names = "{.col}_z"
-    )
+## Number of syllables
+
+```{r}
+#| label: n-syllables-model
+
+get_prior(
+  formula = bf_raw, 
+  family = poisson(link = "log"), 
+  data = filter(dat_z, metric == "n_syllables")
+) |> 
+  select(prior, class, coef) |> 
+  knitr::kable()
+
+n_syllables_prior <- c(
+  prior(normal(5, 1), class = "b"), 
+  prior(lkj(1), class = "cor"), 
+  prior(exponential(1), class = "sd")
+)
+
+mod_sr_n_syllables <- brm(
+  formula = bf_raw, 
+  family = poisson(link = "log"), 
+  prior = n_syllables_prior, 
+  sample_prior = "no", 
+  chains = 4, iter = 2000, warmup = 1000, 
+  cores = 4, threads = threading(2), 
+  backend = "cmdstanr", 
+  control = list(adapt_delta = 0.99, max_treedepth = 12), 
+  data = filter(dat_z, metric == "n_syllables"), 
+  file = here("models", "mod_sr_n_syllables")
+)
+
+```
+
+```{r}
+#| label: n-syllables-model-ppcheck
+#| dpi: 300
+#| fig-asp: 0.56
+#| out-width: "100%"
+#| include: false
+#| message: false
+# Posterior predictive checks
+mod_sr_n_syllables %>%
+  mcplot() +
+  mc_model_line(stat = "density", alpha = .2) +
+  mc_obs_line(stat = "density") +
+  mc_layout_superposition() +
+  mc_gglayer(coord_flip())
+
+# Check by language
+mod_sr_n_syllables %>%
+  mcplot() +
+  mc_draw(ndraws = 100) +
+  mc_model_lineribbon() +
+  mc_obs_point(alpha = 0.4) +
+  mc_condition_on(x = vars(language))
+
+# Checks by phase
+mod_sr_n_syllables %>%
+  mcplot() +
+  mc_draw(ndraws = 100) +
+  mc_model_lineribbon() +
+  mc_obs_point(alpha = 0.4) +
+  mc_condition_on(x = vars(phase))
+
+# PP for participants
+mod_sr_n_syllables %>%
+  mcplot() + 
+  mc_model_halfeye(side = "left") +
+  mc_obs_halfeye() +
+  mc_condition_on(x = vars(id), row = vars(phase)) 
+
+```
+
+
+```{r}
+#| label: fig-n-syllables-model
+#| dpi: 300
+#| fig-asp: 0.7
+#| out-width: "100%"
+#| fig-cap: "Syllables produced"
+#| fig-subcap: ["Number of syllables produced as a function of language (English, Spanish) and phase (pre, post).", "Average marginal estimate of the difference between 'pre' and 'post' for each language."]
+#| layout-ncol: 2
+
+as_tibble(mod_sr_n_syllables) |> 
+  transmute(
+    English_pre = exp(`b_phasepre:languageEnglish`),
+    English_post = exp(`b_phasepost:languageEnglish`),
+    Spanish_pre = exp(`b_phasepre:languageSpanish`),
+    Spanish_post = exp(`b_phasepost:languageSpanish`)
   ) |> 
+  pivot_longer(cols = everything()) |> 
+  separate(name, into = c("language", "phase"), sep = "_") |> 
+  mutate(
+    phase = str_to_title(phase), 
+    phase = fct_relevel(phase, "Pre") 
+  ) |> 
+  ggplot() + 
+  aes(y = language, x = value, group = phase) + 
+  geom_point(
+    data = filter(dat_z, metric == "n_syllables") |> 
+      mutate(phase = str_to_title(phase), phase = fct_relevel(phase, "Pre")), 
+    mapping = aes(y = language, x = val, fill = phase), 
+    position = ggpp::position_dodgenudge(
+      x = 0, direction = "split", width = 0.5
+    ), 
+    pch = 21, alpha = 0.4, size = 3, color = "white", stroke = 1
+  ) + 
+  stat_halfeye(
+    aes(fill = phase), 
+    position = ggpp::position_dodgenudge(
+      y = 0.06, direction = "split", width = 0.5), 
+    pch = 21, point_fill = "white", show.legend = F
+    ) + 
+  scale_fill_viridis_d(name = NULL, option = "D", begin = 0.4, end = 0.8) +
+  scale_color_viridis_d(name = NULL, option = "D", begin = 0.4, end = 0.8) + 
+  labs(y = NULL, x = "Syllables\n") + 
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 3))) + 
+  theme(
+    legend.position = "inside", legend.justification.inside = c(1, 0), 
+    legend.background = element_blank(), 
+    axis.text.y = element_text(angle = 90, hjust = 0.5)
+  )
+
+avg_comparisons(
+  model = mod_sr_n_syllables, 
+  variables = "phase", 
+  by = "language"
+) |> 
+  posterior_draws() |> 
+  ggplot() + 
+  aes(x = draw, y = language) + 
+  geom_rect(
+    inherit.aes = F, 
+    data = tibble(xmin = -50, xmax = 50), 
+    aes(xmin = xmin, xmax = xmax, ymin = -Inf, ymax = Inf), 
+    fill = my_col(b = 0.5, n = 1, a = 0.2), color = "white", 
+  ) + 
+  geom_vline(xintercept = 0, lty = 3) + 
+  stat_halfeye(
+    aes(alpha = after_stat(abs(x) < 50)), 
+    slab_fill = my_col(b = 0.5, n = 1), slab_color = "white", 
+    show.legend = F, pch = 21, point_fill = "white"
+  ) + 
+  scale_alpha_manual(values = c(1, 0.4)) + 
+  scale_y_discrete(position = "right") + 
+  coord_cartesian(xlim = c(-60, NA)) + 
+  labs(x = "Average marginal estimate\nPost - Pre", y = NULL) + 
+  theme(axis.text.y.right = element_text(angle = -90, hjust = 0.5))
+
+```
+
+
+
+
+## Number of pauses
+
+```{r}
+#| label: n-pauses-model
+
+get_prior(
+  formula = bf_raw, 
+  family = poisson(link = "log"), 
+  data = filter(dat_z, metric == "n_pauses")
+) |> 
+  select(prior, class, coef) |> 
+  knitr::kable()
+
+n_pauses_prior <- c(
+  prior(normal(4, 1), class = "b"), 
+  prior(lkj(1), class = "cor"), 
+  prior(exponential(1), class = "sd")
+)
+
+mod_sr_n_pauses <- brm(
+  formula = bf_raw, 
+  family = poisson(link = "log"), 
+  prior = n_syllables_prior, 
+  sample_prior = "no", 
+  chains = 4, iter = 2000, warmup = 1000, 
+  cores = 4, threads = threading(2), 
+  backend = "cmdstanr", 
+  control = list(adapt_delta = 0.99, max_treedepth = 12), 
+  data = filter(dat_z, metric == "n_pauses"), 
+  file = here("models", "mod_sr_n_pauses")
+)
+
+```
+
+```{r}
+#| label: n-pauses-model-ppcheck
+#| dpi: 300
+#| fig-asp: 0.56
+#| out-width: "100%"
+#| include: false
+# Posterior predictive checks
+mod_sr_n_pauses |>
+  mcplot() +
+  mc_model_line(stat = "density", alpha = .2) +
+  mc_obs_line(stat = "density") +
+  mc_layout_superposition() +
+  mc_gglayer(coord_flip())
+
+# Check by language
+mod_sr_n_pauses |>
+  mcplot() +
+  mc_draw(ndraws = 100) +
+  mc_model_lineribbon() +
+  mc_obs_point(alpha = 0.4) +
+  mc_condition_on(x = vars(language))
+
+# Checks by phase
+mod_sr_n_pauses |>
+  mcplot() +
+  mc_draw(ndraws = 100) +
+  mc_model_lineribbon() +
+  mc_obs_point(alpha = 0.4) +
+  mc_condition_on(x = vars(phase))
+
+# PP for participants
+mod_sr_n_pauses |>
+  mcplot() + 
+  mc_model_halfeye(side = "left") +
+  mc_obs_halfeye() +
+  mc_condition_on(x = vars(id), row = vars(phase)) 
+
+```
+
+
+
+```{r}
+#| label: fig-n-pauses-model
+#| dpi: 300
+#| fig-asp: 0.7
+#| out-width: "100%"
+#| fig-cap: "Pauses produced"
+#| fig-subcap: ["Number of pauses produced as a function of language (English, Spanish) and phase (pre, post).", "Average marginal estimate of the difference between 'pre' and 'post' pauses for each language."]
+#| layout-ncol: 2
+
+as_tibble(mod_sr_n_pauses) |> 
+  transmute(
+    English_pre = exp(`b_phasepre:languageEnglish`),
+    English_post = exp(`b_phasepost:languageEnglish`),
+    Spanish_pre = exp(`b_phasepre:languageSpanish`),
+    Spanish_post = exp(`b_phasepost:languageSpanish`)
+  ) |> 
+  pivot_longer(cols = everything()) |> 
+  separate(name, into = c("language", "phase"), sep = "_") |> 
+  mutate(
+    phase = str_to_title(phase), 
+    phase = fct_relevel(phase, "Pre") 
+  ) |> 
+  ggplot() + 
+  aes(y = language, x = value, group = phase) + 
+  geom_point(
+    data = filter(dat_z, metric == "n_pauses") |> 
+      mutate(phase = str_to_title(phase), phase = fct_relevel(phase, "Pre")), 
+    mapping = aes(y = language, x = val, fill = phase), 
+    position = ggpp::position_dodgenudge(
+      x = 0, direction = "split", width = 0.5
+    ), 
+    pch = 21, alpha = 0.4, size = 3, color = "white", stroke = 1
+  ) + 
+  stat_halfeye(
+    aes(fill = phase), 
+    position = ggpp::position_dodgenudge(
+      y = 0.06, direction = "split", width = 0.5), 
+    pch = 21, point_fill = "white", show.legend = F
+    ) + 
+  scale_fill_viridis_d(name = NULL, option = "D", begin = 0.4, end = 0.8) +
+  scale_color_viridis_d(name = NULL, option = "D", begin = 0.4, end = 0.8) + 
+  labs(y = NULL, x = "Pauses\n") + 
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 3))) + 
+  theme(
+    legend.position = "inside", legend.justification.inside = c(1, 0), 
+    legend.background = element_blank(), 
+    axis.text.y = element_text(angle = 90, hjust = 0.5)
+  )
+
+avg_comparisons(
+  model = mod_sr_n_pauses, 
+  variables = "phase", 
+  by = "language"
+) |> 
+  posterior_draws() |> 
+  ggplot() + 
+  aes(x = draw, y = language) + 
+  geom_rect(
+    inherit.aes = F, 
+    data = tibble(xmin = -10, xmax = 10), 
+    aes(xmin = xmin, xmax = xmax, ymin = -Inf, ymax = Inf), 
+    fill = my_col(b = 0.5, n = 1, a = 0.2), color = "white", 
+  ) + 
+  geom_vline(xintercept = 0, lty = 3) + 
+  stat_halfeye(
+    aes(alpha = after_stat(abs(x) < 10)), 
+    slab_fill = my_col(b = 0.5, n = 1), slab_color = "white", 
+    show.legend = F, pch = 21, point_fill = "white"
+  ) + 
+  scale_alpha_manual(values = c(1, 0.4)) + 
+  scale_y_discrete(position = "right") + 
+  labs(x = "Average marginal estimate\nPost - Pre", y = NULL) + 
+  theme(axis.text.y.right = element_text(angle = -90, hjust = 0.5))
 
 ```

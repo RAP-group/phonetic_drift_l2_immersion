@@ -21,4 +21,30 @@ scale_this <- function(x) {
   return(out)
 }
 
+roper <- function(x, n = 2, count = F) {
+  if (count == FALSE) {
+    out <- c(-0.1 * sd(x), 0.1 * sd(x))
+  } else {
+    out <- c(-0.1 * var(x), 0.1 * var(x))
+  }
+  if (n == 1) {
+    return(out[1])
+  } else {
+    return(out)
+  }
+}
+
+# -----------------------------------------------------------------------------
+
+
+
+
+# Plotting functions ----------------------------------------------------------
+
+my_col <- function(o = "D", b = 0.4, e = 0.8, n = 2, a = 1) {
+  col <- viridis::viridis_pal(option = o, begin = b, end = e)(n)
+  out <- alpha(col, alpha = a)
+  return(out)
+}
+
 # -----------------------------------------------------------------------------
