@@ -14,5 +14,7 @@ library("brms")
 library("vmc")
 library("ggdist")
 library("marginaleffects")
+library("glue")
+library("tinytable")
 
 # -----------------------------------------------------------------------------
