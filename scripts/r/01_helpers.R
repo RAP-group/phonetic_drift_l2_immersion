@@ -34,6 +34,12 @@ roper <- function(x, n = 2, count = F) {
   }
 }
 
+# Round and format numbers to exactly N digits
+specify_decimal <- function(x, k) {
+  out <- trimws(format(round(x, k), nsmall = k))
+  return(out)
+}
+
 # -----------------------------------------------------------------------------
 
 
