@@ -3,7 +3,9 @@ title: "L1 phonetic drift during adult L2 acquisition"
 subtitle: "Speech rate analysis"
 author: "Joseph V. Casillas"
 date: today
+bibliography: ../../docs/pd_lit.bib
 format:
+  pdf: default
   html: 
     theme: spacelab
     toc: true
@@ -24,6 +26,40 @@ Recent research suggests that the cross-linguistic influence that occurs in bili
 This project explores the production of native English speaking adult L2 learners of Spanish. 
 Specifically, it tracks the phonological acquisition of stop contrasts over the course of a domestic immersion program in order to shed light on how L2 phonological acquisition affects L1 phonology. 
 
+## The problem
+
+- Learning to produce and perceive L2 sounds is hard
+- During early stages of learning we produce target language sounds using L1 phonology
+
+## Theoretical issues
+
+Opposing viewpoints: 
+
+- **Speech Learning Model** (SLM-r: @flege2021revised)
+  - L1 and L2 phonetic categories share the same phonetic space
+  - Bidirectional influence, i.e., learning L2 sounds can affect L1 sounds
+- **Second Language Linguistic Perception Model** (L2LP: @VanLeussen2015)
+  - During early stages of learning L1 phonological system is copied
+  - L2 sounds develop independently of L1 system
+
+- As predicted by the SLM-r, there is growing evidence that **phonetic drift** (PD) occurs during L2 learning [See @chang2012; @chang2013novelty; @langydavison2019; @tobin2017phonetic]
+
+- PD refers to changes in L1 (native) categories that take place during the process of learning novel sounds in an L2 .
+
+- The SLM-r predicts phonetic drift, the L2LP suggests it should not occur
+
+## Present study
+
+- We explore the possibility that L2 learning can affect L1 speech using data collected in a domestic immersion program
+
+- Specifically, we analyze speech fluency data (articulation rate, avg. syllable duration) in a pre/post test paradigm 
+
+# Method
+
+- Participants: 30 L1 English adult learners of Spanish participating in a domestic immersion program
+- The program: 7-week domestic immersion, L1 use prohibited
+- Data: We analyze pre and post program interviews conducted in Spanish and English
+- Using Praat we extracted speech fluency metrics to shed light on how L2 immersive learning affects L1 speech
 
 # Data prep
 
@@ -1031,3 +1067,25 @@ bind_rows(
   style_tt(i = 7, line = "b", line_color = "black", line_width = 0.1)
 
 ```
+
+# Discussion
+
+## Tentative conclusions
+
+- After spending 7 weeks using Spanish exclusively, the L2 learners L1 (English) was not affected with regard to fluency metrics
+
+- Our initial findings lend support to the L2LP model
+
+## Next steps
+
+- Analyze entire corpus (n = 400 interviews)
+
+- Extend analysis to segments (e.g., stops, vowels, laterals)
+
+
+
+# References
+
+::: {#refs}
+:::
+
